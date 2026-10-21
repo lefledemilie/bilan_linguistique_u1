@@ -371,6 +371,7 @@ function resetAll() {
 
 /* ---------- Envoi des résultats à la professeure ---------- */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdM94XBrjc-4sTLoz0yt73uyxC5uKBt4tLIX7SiMnVj3VPeNt1m63nPV48F2Yn-y2KuQ/exec';
+const CODE_ATTENDU = 'U1';
 
 function reponseDe(it, i) {
   if (it.type === 'mcq') {
@@ -391,6 +392,10 @@ function envoyer(ok) {
     st.textContent = 'Pour enregistrer votre résultat, remplissez le nom, le prénom et le code de la classe.';
     return;
   }
+  if (code.toUpperCase() !== CODE_ATTENDU) {
+    st.textContent = 'Code de la classe incorrect. Vérifiez le code donné par la professeure, puis cliquez à nouveau sur « Corriger ».';
+    return;
+  }
   const detail = QS.map((it, i) => ({
     n: i + 1,
     juste: document.getElementById('fb' + i).classList.contains('ok'),
@@ -399,16 +404,22 @@ function envoyer(ok) {
   st.textContent = 'Envoi en cours…';
   fetch(SCRIPT_URL, {
     method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       code, nom, prenom, classe, score: ok, total: QS.length, detail,
       ecriture: document.getElementById('writing').value.trim(),
       et_vous: document.getElementById('writing-me').value.trim()
     })
   })
-    .then(() => { st.textContent = 'Résultat envoyé à la professeure.'; })
-    .catch(() => { st.textContent = "Envoi impossible. Vérifiez votre connexion et réessayez."; });
+    .then(r => r.json())
+    .then(res => {
+      st.textContent = res && res.ok
+        ? 'Résultat envoyé à la professeure.'
+        : 'Envoi refusé : ' + ((res && res.erreur) || 'erreur inconnue') + '. Prévenez la professeure.';
+    })
+    .catch(() => {
+      st.textContent = "Impossible de confirmer l'envoi. Ne fermez pas la page et prévenez la professeure.";
+    });
 }
 
 document.getElementById('grade-btn').addEventListener('click', grade);
