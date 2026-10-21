@@ -37,6 +37,10 @@
   .status { font-size: 0.92rem; color: var(--muted); margin: 8px 0; }
   audio { margin-top: 8px; max-width: 100%; }
   .hidden { display: none !important; }
+  #code-alert { border: 0; border-radius: 14px; padding: 22px; max-width: 360px; width: calc(100% - 32px); box-shadow: 0 10px 30px rgba(0,0,0,.25); color: var(--ink); }
+  #code-alert::backdrop { background: rgba(31,35,48,.55); }
+  #code-alert h2 { margin: 0 0 8px; font-size: 1.15rem; color: var(--ko); }
+  #code-alert p { margin: 0 0 6px; }
 </style>
 </head>
 <body>
@@ -108,6 +112,11 @@
   </div>
 </main>
 
+<dialog id="code-alert" aria-labelledby="code-alert-titre">
+  <h2 id="code-alert-titre">Code de la classe incorrect</h2>
+  <p>Votre résultat n'a pas été envoyé. Vérifiez le code donné par la professeure, puis cliquez à nouveau sur « Corriger ».</p>
+  <form method="dialog"><button class="btn" autofocus>OK, j'ai compris</button></form>
+</dialog>
 <script>
 /* ---------- Synthèse vocale (français) ---------- */
 function say(text) {
@@ -393,7 +402,8 @@ function envoyer(ok) {
     return;
   }
   if (code.toUpperCase() !== CODE_ATTENDU) {
-    st.textContent = 'Code de la classe incorrect. Vérifiez le code donné par la professeure, puis cliquez à nouveau sur « Corriger ».';
+    st.textContent = '';
+    document.getElementById('code-alert').showModal();
     return;
   }
   const detail = QS.map((it, i) => ({
@@ -422,6 +432,14 @@ function envoyer(ok) {
     });
 }
 
+document.getElementById('code-alert').addEventListener('close', () => {
+  const champ = document.getElementById('id-code');
+  setTimeout(() => {
+    champ.scrollIntoView({ block: 'center' });
+    champ.focus();
+    champ.select();
+  }, 0);
+});
 document.getElementById('grade-btn').addEventListener('click', grade);
 document.getElementById('reset-btn').addEventListener('click', resetAll);
 
