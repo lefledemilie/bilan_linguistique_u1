@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compréhension audiovisuelle · Présentations</title>
+<style>
+  :root { --bg: #f6f7fb; --card: #ffffff; --ink: #1f2330; --muted: #5d6374; --ok: #2f8f4e; --ko: #c0392b; --line: #cfd4e0; --soft: #eef1f8; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.5; }
+  header { background: #1f2330; color: #fff; padding: 20px 16px; }
+  header h1 { margin: 0; font-size: 1.4rem; }
+  header p { margin: 4px 0 0; color: #c9ceda; font-size: 0.95rem; }
+  main { max-width: 860px; margin: 0 auto; padding: 16px; }
+  .card { background: var(--card); border-radius: 14px; padding: 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  h2 { margin: 0 0 10px; font-size: 1.15rem; }
+  .hint { color: var(--muted); font-size: 0.92rem; margin: 0 0 12px; }
+  .q { padding: 12px 0; border-top: 1px solid #e9ecf3; }
+  input[type=text], select { font: inherit; font-size: 1rem; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; width: 100%; max-width: 340px; background: #fff; color: var(--ink); }
+  input.ok, select.ok { border-color: var(--ok); background: #e8f6ec; }
+  input.ko, select.ko { border-color: var(--ko); background: #fbeaea; }
+  .btn { margin-top: 10px; background: var(--ink); color: #fff; border: 0; padding: 10px 16px; border-radius: 10px; cursor: pointer; font: inherit; margin-right: 6px; }
+  .btn.secondary { background: #e7eaf2; color: var(--ink); }
+  .fb { font-size: 0.92rem; margin-top: 6px; min-height: 1.2em; font-weight: 600; }
+  .fb.ok { color: var(--ok); }
+  .fb.ko { color: var(--ko); }
+  .fb.info { color: var(--muted); }
+  .score { font-weight: 700; font-size: 1.1rem; margin-top: 10px; }
+  .hidden { display: none !important; }
+  .ph { border-radius: 8px; object-fit: cover; display: block; }
+
+  /* Activité 1 : bulles */
+  .bubble-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .bubble { position: relative; background: var(--soft); border-radius: 12px; padding: 8px 12px; font-weight: 600; min-width: 220px; }
+  .bubble::after { content: ""; position: absolute; left: 18px; bottom: -8px; border: 8px solid transparent; border-top-color: var(--soft); border-bottom: 0; }
+  .bubble-row select { max-width: 220px; }
+
+  /* Activité 2 : tableau */
+  .table-wrap { overflow-x: auto; }
+  table.id { border-collapse: collapse; width: 100%; min-width: 560px; }
+  table.id th { background: var(--ink); color: #fff; text-align: left; padding: 8px; font-size: .92rem; }
+  table.id th:first-child { background: transparent; }
+  table.id td { padding: 8px; border-bottom: 1px solid #e9ecf3; vertical-align: top; }
+  table.id td input { max-width: none; }
+  table.id .fb { font-size: .82rem; }
+
+  /* Activité 4 : cases-lettres */
+  .boxes { display: inline-flex; gap: 3px; vertical-align: middle; margin: 0 4px; }
+  .boxes input { width: 30px; height: 34px; padding: 0; text-align: center; font-size: 1.05rem; border-radius: 6px; }
+  .boxes input.given { background: var(--soft); font-weight: 700; }
+  .line { padding: 10px 0; border-top: 1px solid #e9ecf3; }
+  .accents { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 12px; }
+  .accents button { background: var(--ink); color: #fff; border: 0; border-radius: 6px; width: 32px; height: 32px; font: inherit; cursor: pointer; }
+
+  /* Activité 5 : mots croisés */
+  .cw { display: grid; gap: 2px; margin: 8px 0 14px; width: max-content; }
+  .cw .cell { position: relative; width: 30px; height: 30px; }
+  .cw .cell input { width: 30px; height: 30px; padding: 0; text-align: center; text-transform: uppercase; font-size: 1rem; border-radius: 5px; }
+  .cw .cell input.active { background: #dfe8fb; }
+  .cw .num { position: absolute; top: -1px; left: 2px; font-size: .62rem; color: var(--muted); pointer-events: none; z-index: 1; }
+  .clues { display: grid; gap: 10px; }
+  .clue { display: flex; gap: 10px; align-items: center; cursor: pointer; padding: 6px 8px; border-radius: 10px; }
+  .clue.active { background: var(--soft); }
+  .clue b { min-width: 2.2em; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Compréhension audiovisuelle · « Présentations »</h1>
+  <p>Totem 1, vidéo 3 · manuel p. 28 (transcription p. 122).</p>
+  <p>Regardez la vidéo avec le son, puis faites les activités. Cliquez sur « Corriger » à la fin.</p>
+</header>
+
+<main>
+  <div class="card">
+    <h2>Identification</h2>
+    <input type="text" id="id-nom" placeholder="Nom" autocomplete="off" style="margin-bottom:8px">
+    <input type="text" id="id-prenom" placeholder="Prénom" autocomplete="off" style="margin-bottom:8px">
+    <input type="text" id="id-classe" placeholder="Classe (ex. A1.A)" autocomplete="off">
+  </div>
+
+  <div class="card" id="video-card">
+    <h2>La vidéo</h2>
+    <p class="hint">Regardez la vidéo une première fois sans faire les activités. Ensuite, regardez-la une deuxième fois et répondez.</p>
+    <div id="video-host"></div>
+  </div>
+
+  <div class="card">
+    <h2>Activité 1 · Qui dit quoi ?</h2>
+    <p class="hint">Associez chaque bulle à une personne de la vidéo.</p>
+    <div id="a1"></div>
+  </div>
+
+  <div class="card">
+    <h2>Activité 2 · Les fiches d'identité</h2>
+    <p class="hint">Complétez le tableau avec les informations de la vidéo.</p>
+    <div class="table-wrap"><table class="id" id="a2"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Activité 3 · Les enfants Le Tallec</h2>
+    <img class="ph" src="img/hugo.jpg" alt="Hugo Le Tallec" width="170" height="244" style="height:150px;width:auto;margin-bottom:8px">
+    <p class="hint">Hugo présente sa sœur. Choisissez le bon pronom tonique.</p>
+    <div id="a3"></div>
+  </div>
+
+  <div class="card">
+    <h2>Activité 4 · La famille</h2>
+    <p class="hint">Complétez avec un mot de la famille. Une lettre est déjà écrite.</p>
+    <div id="a4"></div>
+    <div class="accents" id="accents"></div>
+  </div>
+
+  <div class="card">
+    <h2>Activité 5 · Mots croisés : les professions</h2>
+    <p class="hint">Cliquez sur une définition, puis écrivez le mot dans la grille (sans accents si vous voulez).</p>
+    <div class="table-wrap"><div class="cw" id="cw"></div></div>
+    <div class="clues" id="clues"></div>
+  </div>
+
+  <div class="card">
+    <h2>Résultat</h2>
+    <button class="btn" id="grade-btn">Corriger</button>
+    <button class="btn secondary" id="reset-btn">Tout effacer</button>
+    <div class="score" id="total-score"></div>
+    <p class="hint" style="margin-top:10px">Pour finir, vérifiez vos réponses avec la transcription (manuel p. 122).</p>
+  </div>
+</main>
+
+<script>
+/* ---------- Vidéo : collez ici le lien de la vidéo (YouTube, Drive ou fichier .mp4) ---------- */
+const VIDEO_URL = '';
+
+/* ---------- Données ---------- */
+const PEOPLE = ['Laurent Bonomi', 'Simon Le Tallec', 'Françoise Le Tallec', 'Hugo Le Tallec', 'Le livreur'];
+
+const A1 = [
+  { text: 'Je suis architecte.', img: 'img/laurent.jpg', answer: 'Laurent Bonomi' },
+  { text: 'Je suis ingénieur à la SNCF.', answer: 'Simon Le Tallec' },
+  { text: 'Je suis étudiant en socio.', answer: 'Hugo Le Tallec' },
+  { text: 'Je suis mariée avec Simon.', answer: 'Françoise Le Tallec' },
+  { text: 'Je suis livreur de pizza.', img: 'img/livreur.jpg', answer: 'Le livreur' },
+];
+
+/* age : null = non noté (à vérifier avec la transcription). */
+const A2 = [
+  { img: 'img/simon.jpg', alt: 'Simon', prenom: ['simon'], nom: ['le tallec'], age: null,
+    prof: ['ingenieur', 'ingenieur a la sncf'], profShow: 'ingénieur à la SNCF' },
+  { img: 'img/laurent.jpg', alt: 'Laurent', prenom: ['laurent'], nom: ['bonomi'], age: null,
+    prof: ['architecte'], profShow: 'architecte' },
+  { img: 'img/hugo.jpg', alt: 'Hugo', prenom: ['hugo'], nom: ['le tallec'], age: ['20', 'vingt', '20 ans', 'vingt ans'],
+    prof: ['etudiant', 'etudiant en socio', 'etudiant en sociologie'], profShow: 'étudiant en socio(logie)' },
+];
+
+const A3 = [
+  { before: '', after: ", c'est Hugo.", options: ['Moi', 'Lui', 'Elle'], answer: 'Moi', explain: 'Hugo parle de lui : moi.' },
+  { before: 'Et ', after: ", c'est Louise, ma sœur.", options: ['moi', 'lui', 'elle'], answer: 'elle', explain: 'Louise est une fille : elle.' },
+];
+
+/* mot : la réponse ; given : position de la lettre donnée (0 = première lettre). */
+const A4 = [
+  { before: 'Je suis la', word: 'femme', given: 0, after: 'de Laurent Bonomi.' },
+  { before: 'Je suis le', word: 'fils', given: 3, after: 'de Simon et Françoise Le Tallec.' },
+  { before: 'Je suis la', word: 'fille', given: 2, after: 'de Laurent et Nathalie Bonomi.' },
+  { before: 'Je suis la', word: 'sœur', given: 0, after: 'de Hugo Le Tallec.' },
+  { before: 'Je suis le', word: 'frère', given: 3, after: 'de Juliette Bonomi.' },
+  { before: 'Nous sommes les', word: 'enfants', given: 2, after: 'de Simon et Françoise Le Tallec.' },
+];
+
+/* Mots croisés : r = ligne, c = colonne de départ, d = 'h' (horizontal) ou 'v' (vertical). */
+const CW = [
+  { n: 1, word: 'ARCHITECTE', r: 1, c: 0, d: 'h', clue: 'Laurent Bonomi dessine des maisons. Il est …' },
+  { n: 2, word: 'PROFESSEUR', r: 0, c: 1, d: 'v', clue: 'Il travaille dans une école ou un lycée. Il est …' },
+  { n: 3, word: 'INGENIEUR', r: 1, c: 4, d: 'v', clue: 'Simon Le Tallec travaille à la SNCF. Il est …' },
+  { n: 4, word: 'ETUDIANT', r: 4, c: 4, d: 'h', clue: "Hugo va à l'université, en socio. Il est …" },
+  { n: 5, word: 'LIVREUR', r: 3, c: 8, d: 'v', clue: 'Il apporte les pizzas à la maison. Il est … de pizza.' },
+];
+
+/* ---------- Outils ---------- */
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+const norm = s => s.trim().toLowerCase().replace(/œ/g, 'oe').normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .replace(/[’']/g, "'").replace(/[.!?]/g, '').replace(/\s+/g, ' ');
+function mark(input, fb, good, correct) {
+  input.classList.remove('ok', 'ko');
+  input.classList.add(good ? 'ok' : 'ko');
+  fb.className = 'fb ' + (good ? 'ok' : 'ko');
+  fb.textContent = good ? 'Correct !' : 'Réponse : ' + correct;
+}
+let lastInput = null;
+document.addEventListener('focusin', e => {
+  if (e.target.matches('input[type=text]') && !e.target.readOnly) lastInput = e.target;
+});
+
+/* ---------- Vidéo ---------- */
+(function () {
+  const host = document.getElementById('video-host');
+  if (!VIDEO_URL) {
+    host.appendChild(el('p', 'hint', 'La professeure projette la vidéo en classe.'));
+    return;
+  }
+  const yt = VIDEO_URL.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/);
+  const drive = VIDEO_URL.match(/drive\.google\.com\/file\/d\/([\w-]+)/);
+  if (yt || drive) {
+    const f = document.createElement('iframe');
+    f.src = yt ? 'https://www.youtube-nocookie.com/embed/' + yt[1] : 'https://drive.google.com/file/d/' + drive[1] + '/preview';
+    f.allow = 'fullscreen; picture-in-picture';
+    f.style.cssText = 'width:100%;aspect-ratio:16/9;border:0;border-radius:10px';
+    host.appendChild(f);
+  } else {
+    const v = document.createElement('video');
+    v.src = VIDEO_URL; v.controls = true;
+    v.style.cssText = 'width:100%;border-radius:10px';
+    host.appendChild(v);
+  }
+})();
+
+/* ---------- Activité 1 ---------- */
+const a1 = document.getElementById('a1');
+A1.forEach((it, i) => {
+  const box = el('div', 'q');
+  const row = el('div', 'bubble-row');
+  if (it.img) {
+    const im = el('img', 'ph'); im.src = it.img; im.alt = ''; im.style.cssText = 'width:96px;height:56px';
+    row.appendChild(im);
+  }
+  row.appendChild(el('div', 'bubble', it.text));
+  const s = document.createElement('select'); s.id = 'a1-' + i;
+  s.appendChild(new Option('Qui parle ?', ''));
+  PEOPLE.forEach(p => s.appendChild(new Option(p, p)));
+  row.appendChild(s);
+  box.appendChild(row);
+  const fb = el('div', 'fb'); fb.id = 'a1fb-' + i;
+  box.appendChild(fb);
+  a1.appendChild(box);
+});
+
+/* ---------- Activité 2 ---------- */
+const a2 = document.getElementById('a2');
+const COLS = [['prenom', 'le prénom'], ['nom', 'le nom'], ['age', "l'âge"], ['prof', 'la profession / les études']];
+const head = a2.insertRow();
+head.appendChild(el('th'));
+COLS.forEach(([, lab]) => head.appendChild(el('th', null, lab)));
+A2.forEach((p, i) => {
+  const tr = a2.insertRow();
+  const td0 = tr.insertCell();
+  const im = el('img', 'ph'); im.src = p.img; im.alt = p.alt ? 'Photo ' + (i + 1) : ''; im.style.cssText = 'width:70px;height:48px';
+  td0.appendChild(im);
+  COLS.forEach(([k]) => {
+    const td = tr.insertCell();
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.id = 'a2-' + i + '-' + k; inp.autocomplete = 'off';
+    td.appendChild(inp);
+    const fb = el('div', 'fb'); fb.id = 'a2fb-' + i + '-' + k;
+    td.appendChild(fb);
+  });
+});
+
+/* ---------- Activité 3 ---------- */
+const a3 = document.getElementById('a3');
+A3.forEach((it, i) => {
+  const box = el('div', 'q');
+  box.appendChild(document.createTextNode(it.before));
+  const s = document.createElement('select'); s.id = 'a3-' + i; s.style.maxWidth = '120px';
+  s.appendChild(new Option('…', ''));
+  it.options.forEach(o => s.appendChild(new Option(o, o)));
+  box.appendChild(s);
+  box.appendChild(document.createTextNode(it.after));
+  const fb = el('div', 'fb'); fb.id = 'a3fb-' + i;
+  box.appendChild(fb);
+  a3.appendChild(box);
+});
+
+/* ---------- Activité 4 ---------- */
+const a4 = document.getElementById('a4');
+A4.forEach((it, i) => {
+  const line = el('div', 'line');
+  line.appendChild(document.createTextNode(it.before + ' '));
+  const wrap = el('span', 'boxes'); wrap.id = 'a4-' + i;
+  const letters = [...it.word];
+  letters.forEach((ch, j) => {
+    const b = document.createElement('input');
+    b.type = 'text'; b.maxLength = 2; b.autocomplete = 'off'; b.setAttribute('aria-label', 'lettre ' + (j + 1));
+    if (j === it.given) { b.value = ch; b.readOnly = true; b.className = 'given'; b.tabIndex = -1; }
+    b.addEventListener('focus', () => b.select());
+    b.addEventListener('input', () => {
+      b.value = b.value.slice(-1);
+      if (b.value) {
+        let n = b.nextElementSibling;
+        while (n && n.readOnly) n = n.nextElementSibling;
+        if (n) n.focus();
+      }
+    });
+    b.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !b.value) {
+        let p = b.previousElementSibling;
+        while (p && p.readOnly) p = p.previousElementSibling;
+        if (p) { p.focus(); p.value = ''; e.preventDefault(); }
+      }
+    });
+    wrap.appendChild(b);
+  });
+  line.appendChild(wrap);
+  line.appendChild(document.createTextNode(' ' + it.after));
+  const fb = el('div', 'fb'); fb.id = 'a4fb-' + i;
+  line.appendChild(fb);
+  a4.appendChild(line);
+});
+const acc = document.getElementById('accents');
+['à', 'â', 'é', 'è', 'ê', 'ë', 'î', 'ï', 'ô', 'û', 'ù', 'ç', 'œ'].forEach(ch => {
+  const b = el('button', null, ch); b.type = 'button';
+  b.addEventListener('mousedown', e => e.preventDefault());
+  b.addEventListener('click', () => {
+    if (!lastInput) return;
+    lastInput.value = lastInput.maxLength === 2 || lastInput.maxLength === 1 ? ch : lastInput.value + ch;
+    lastInput.dispatchEvent(new Event('input'));
+    lastInput.focus();
+  });
+  acc.appendChild(b);
+});
+
+/* ---------- Activité 5 : mots croisés ---------- */
+const cwHost = document.getElementById('cw');
+const cells = {};
+let rows = 0, cols = 0;
+CW.forEach(w => {
+  [...w.word].forEach((ch, k) => {
+    const r = w.r + (w.d === 'v' ? k : 0), c = w.c + (w.d === 'h' ? k : 0);
+    rows = Math.max(rows, r + 1); cols = Math.max(cols, c + 1);
+    cells[r + ',' + c] = ch;
+  });
+});
+cwHost.style.gridTemplateColumns = 'repeat(' + cols + ', 30px)';
+const cwInputs = {};
+let current = CW[0];
+for (let r = 0; r < rows; r++) {
+  for (let c = 0; c < cols; c++) {
+    const cell = el('div', 'cell');
+    if (cells[r + ',' + c]) {
+      const start = CW.find(w => w.r === r && w.c === c);
+      if (start) cell.appendChild(el('span', 'num', start.n));
+      const inp = document.createElement('input');
+      inp.type = 'text'; inp.maxLength = 2; inp.autocomplete = 'off';
+      inp.setAttribute('aria-label', 'case ligne ' + (r + 1) + ', colonne ' + (c + 1));
+      inp.addEventListener('focus', () => {
+        inp.select();
+        if (!wordHas(current, r, c)) {
+          const w = CW.find(x => wordHas(x, r, c));
+          if (w) selectWord(w);
+        }
+      });
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.slice(-1).toUpperCase();
+        if (inp.value) {
+          const next = nextCell(current, r, c, 1);
+          if (next) next.focus();
+        }
+      });
+      inp.addEventListener('keydown', e => {
+        if (e.key === 'Backspace' && !inp.value) {
+          const prev = nextCell(current, r, c, -1);
+          if (prev) { prev.focus(); prev.value = ''; e.preventDefault(); }
+        }
+      });
+      cwInputs[r + ',' + c] = inp;
+      cell.appendChild(inp);
+    }
+    cwHost.appendChild(cell);
+  }
+}
+function wordCells(w) {
+  return [...w.word].map((_, k) => (w.r + (w.d === 'v' ? k : 0)) + ',' + (w.c + (w.d === 'h' ? k : 0)));
+}
+function wordHas(w, r, c) { return wordCells(w).includes(r + ',' + c); }
+function nextCell(w, r, c, step) {
+  const list = wordCells(w), k = list.indexOf(r + ',' + c);
+  return k < 0 ? null : cwInputs[list[k + step]] || null;
+}
+const clueHost = document.getElementById('clues');
+CW.forEach(w => {
+  const row = el('div', 'clue'); row.id = 'clue-' + w.n;
+  row.appendChild(el('b', null, w.n + '.'));
+  const t = el('div');
+  t.appendChild(el('div', null, w.clue + ' (' + w.word.length + ' lettres, ' + (w.d === 'h' ? 'horizontal' : 'vertical') + ')'));
+  const fb = el('div', 'fb'); fb.id = 'cwfb-' + w.n;
+  t.appendChild(fb);
+  row.appendChild(t);
+  row.addEventListener('click', () => {
+    selectWord(w);
+    cwInputs[wordCells(w)[0]].focus();
+  });
+  clueHost.appendChild(row);
+});
+function selectWord(w) {
+  current = w;
+  Object.values(cwInputs).forEach(i => i.classList.remove('active'));
+  wordCells(w).forEach(k => cwInputs[k].classList.add('active'));
+  document.querySelectorAll('.clue').forEach(c => c.classList.toggle('active', c.id === 'clue-' + w.n));
+}
+selectWord(CW[0]);
+
+/* ---------- Correction ---------- */
+function grade() {
+  let ok = 0, total = 0;
+
+  A1.forEach((it, i) => {
+    const s = document.getElementById('a1-' + i), good = s.value === it.answer;
+    total++; if (good) ok++;
+    mark(s, document.getElementById('a1fb-' + i), good, it.answer);
+  });
+
+  A2.forEach((p, i) => {
+    COLS.forEach(([k]) => {
+      const inp = document.getElementById('a2-' + i + '-' + k);
+      const fb = document.getElementById('a2fb-' + i + '-' + k);
+      const accepted = p[k];
+      if (accepted === null) {
+        inp.classList.remove('ok', 'ko');
+        fb.className = 'fb info';
+        fb.textContent = 'Vérifiez avec la transcription p. 122.';
+        return;
+      }
+      const good = accepted.includes(norm(inp.value));
+      total++; if (good) ok++;
+      const show = k === 'prof' ? p.profShow : k === 'age' ? '20 ans'
+        : accepted[0].replace(/(^|\s)\S/g, m => m.toUpperCase());
+      mark(inp, fb, good, show);
+    });
+  });
+
+  A3.forEach((it, i) => {
+    const s = document.getElementById('a3-' + i), good = s.value === it.answer;
+    total++; if (good) ok++;
+    mark(s, document.getElementById('a3fb-' + i), good, it.answer + ' — ' + it.explain);
+  });
+
+  A4.forEach((it, i) => {
+    const boxes = [...document.querySelectorAll('#a4-' + i + ' input')];
+    const typed = boxes.map(b => b.value).join('');
+    const good = norm(typed) === norm(it.word) && typed.length === [...it.word].length;
+    total++; if (good) ok++;
+    boxes.forEach(b => { if (!b.readOnly) { b.classList.remove('ok', 'ko'); b.classList.add(good ? 'ok' : 'ko'); } });
+    const fb = document.getElementById('a4fb-' + i);
+    fb.className = 'fb ' + (good ? 'ok' : 'ko');
+    fb.textContent = good ? 'Correct !' : 'Réponse : ' + it.word;
+  });
+
+  Object.values(cwInputs).forEach(i => i.classList.remove('ok', 'ko'));
+  CW.forEach(w => {
+    const list = wordCells(w).map(k => cwInputs[k]);
+    const good = norm(list.map(i => i.value).join('')) === norm(w.word);
+    total++; if (good) ok++;
+    list.forEach(i => { if (!i.classList.contains('ok')) { i.classList.remove('ko'); i.classList.add(good ? 'ok' : 'ko'); } });
+    const fb = document.getElementById('cwfb-' + w.n);
+    fb.className = 'fb ' + (good ? 'ok' : 'ko');
+    fb.textContent = good ? 'Correct !' : 'Réponse : ' + w.word;
+  });
+
+  document.getElementById('total-score').textContent = 'Score : ' + ok + ' / ' + total;
+}
+
+function resetAll() {
+  document.querySelectorAll('input[type=text]').forEach(t => { if (!t.readOnly) t.value = ''; t.classList.remove('ok', 'ko'); });
+  document.querySelectorAll('select').forEach(s => { s.selectedIndex = 0; s.classList.remove('ok', 'ko'); });
+  document.querySelectorAll('.fb').forEach(f => { f.textContent = ''; f.className = 'fb'; });
+  document.getElementById('total-score').textContent = '';
+}
+
+document.getElementById('grade-btn').addEventListener('click', grade);
+document.getElementById('reset-btn').addEventListener('click', resetAll);
+</script>
+</body>
+</html>
